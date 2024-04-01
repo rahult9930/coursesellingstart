@@ -4,7 +4,8 @@ import Appbar from './components/Appbar'
 import Signin from './components/Signin';
 import Addcourse from './components/addcourse';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-
+import Courses from './components/courses';
+import Course from './components/course';
 function App() {
   
 
@@ -22,7 +23,8 @@ function App() {
                 <Route path="/Signup" element={<Signup />} />
                 <Route path="/Signin" element={<Signin />} />
                 <Route path="/addcourse" element={<Addcourse />} />
-                {/* <Route path="/courses" element={<ShowCourses />} /> */}
+                <Route path="/courses" element={<Courses />} />
+                <Route path="/course/:courseId" element={<Course />} />
             </Routes>
         </Router>
     </div>

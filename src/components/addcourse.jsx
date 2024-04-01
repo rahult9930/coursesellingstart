@@ -6,6 +6,7 @@ import { useState } from 'react';
 const Addcourse = () => {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
+    const [imageLink,setImageLink]=useState("");
   return (
     <div>
         <center style={{
@@ -32,6 +33,10 @@ const Addcourse = () => {
                     setDescription(e.target.value);
                 }}>Description</TextField> <br />
                 <br />
+                <TextField fullWidth={true} label="imageLink" onChange={(e) => {
+                    setImageLink(e.target.value);
+                }}>imageLink</TextField> <br />
+                <br />
                 <Button variant="contained" onClick={() => {
                     fetch("http://localhost:3000/admin/courses",{
                         method:"POST",
@@ -40,7 +45,7 @@ const Addcourse = () => {
                             description,
                             price:"",
                             published:true,
-                            imageLink:""
+                            imageLink
                         }),
                         headers:{
                             "Content-Type":"application/json",
