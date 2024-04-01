@@ -4,7 +4,8 @@ import { Card, Typography ,TextField, Button} from '@mui/material';
 
 const Course = () => {
     let { courseId }=useParams();
-    const [courses,setCourses]=useState([]);
+    const [courses, setCourses] = useState([]);
+   console.log(courses);
     useEffect(() => {
         fetch("http://localhost:3000/admin/courses", {
             method: "GET",
@@ -21,6 +22,7 @@ const Course = () => {
     for(var i=0;i<courses.length;i++){
         if(courses[i].id==courseId) course=courses[i];
     }
+    console.log(course);
      if(!course){
         return (
             <div>IsLoading...</div>
@@ -33,7 +35,7 @@ const Course = () => {
         justifyContent:'center'
     }}>
         <CourseCard course={course} />
-        <UpdateCard course={course} courses={courses} courseId={courseId}/>
+        <UpdateCard courses={courses} course={course} setCourses={setCourses} />
     </div>
   )
 }
@@ -63,72 +65,68 @@ function CourseCard(props) {
 const UpdateCard = (props) => {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
-    const [imageLink,setImageLink]=useState("");
-    const course=props.course;
-    const courses=props.courses;
-  return (
-    <div>
+    const [imageLink, setImageLink] = useState("");
 
+    const { courses, course, setCourses } = props;
 
-        <center>
-            <Card style={{
-                width:400,
-                padding:20,
-                backgroundColor:"#FBF9F1"
-            }}>
-            <div >
-                <TextField fullWidth={true}  label="Title" onChange={(e) => {
-                    setTitle(e.target.value);
-                }}>Title</TextField> <br/><br />
-                <TextField fullWidth={true} label="Description" onChange={(e) => {
-                    setDescription(e.target.value);
-                }}>Description</TextField> <br />
-                <br />
-                <TextField fullWidth={true} label="imageLink" onChange={(e) => {
-                    setImageLink(e.target.value);
-                }}>imageLink</TextField> <br />
-                <br />
-                <Button variant="contained" onClick={() => {
-                    fetch("http://localhost:3000/admin/courses/:courseId",{
-                        method:"PUT",
-                        body:JSON.stringify({
-                            title,
-                            description,
-                            price:"",
-                            published:true,
-                            imageLink
-                        }),
-                        headers:{
-                            "Content-Type":"application/json",
-                     "Authorization":"Bearer "+localStorage.getItem("token")
-                    }
-                        
-                    }).then((res) => {
-                        return res.json();
-                    }).then((data) => {
-                        alert("Course Updated Successfully");
-                        let updatedCourses=[];
-                        for(var i=0;i<courses.length;i++){
-                            if(courses[i].id==props.courseId){
-                              updatedCourses.push({
-                                title,
-                                description,
-                                price:"",
-                                published:true,
-                                imageLink
-                              })
-                            }
-                            else{
-                                updatedCourses.push(courses[i]);
-                            }
-                        }
-                        console.log(data);
-                    })
-                }}>Update</Button>
-            </div>
-            </Card>
-        </center>
-    </div>
-  )
-}
+    const handleUpdate = () => {
+        fetch(`http://localhost:3000/admin/courses/${course.id}`, {
+            method: "PUT",
+            body: JSON.stringify({
+                title,
+                description,
+                price: "",
+                published: true,
+                imageLink
+            }),
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            }
+        })
+        .then((res) => res.json())
+        .then((data) => {
+            const updatedCourses = courses.map((c) => {
+                if (c.id === course.id) {
+                    return {
+                        ...c,
+                        title,
+                        description,
+                        imageLink
+                    };
+                } else {
+                    return c;
+                }
+            });
+            console.log("hi");
+            console.log(updatedCourses);
+            setCourses(updatedCourses);
+            
+            alert("Course Updated Successfully");
+            console.log(data);
+        });
+    };
+
+    return (
+        <div>
+            <center>
+                <Card style={{
+                    width: 400,
+                    padding: 20,
+                    backgroundColor: "#FBF9F1"
+                }}>
+                    <div>
+                        <TextField fullWidth={true} label="Title" value={title} onChange={(e) => setTitle(e.target.value)} /> <br /><br />
+                        <TextField fullWidth={true} label="Description" value={description} onChange={(e) => setDescription(e.target.value)} /> <br />
+                        <br />
+                        <TextField fullWidth={true} label="Image Link" value={imageLink} onChange={(e) => setImageLink(e.target.value)} /> <br />
+                        <br />
+                        <Button variant="contained" onClick={handleUpdate}>Update</Button>
+                    </div>
+                </Card>
+            </center>
+        </div>
+    );
+};
+
 export default Course
