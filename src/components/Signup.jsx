@@ -25,10 +25,10 @@ const Signup = () => {
                 backgroundColor:"#FBF9F1"
             }}>
             <div >
-                <TextField fullWidth={true}  label="Email" onChange={(e) => {
+                <TextField fullWidth={true} type='email' label="Email" onChange={(e) => {
                     setEmail(e.target.value);
                 }}>Email</TextField> <br/><br />
-                <TextField fullWidth={true} label="Password" onChange={(e) => {
+                <TextField fullWidth={true} type="password" label="Password" onChange={(e) => {
                     setPassword(e.target.value);
                 }}>Password</TextField> <br />
                 <br />
@@ -45,6 +45,7 @@ const Signup = () => {
                     }).then((data) => {
                         console.log(data.token);
                         localStorage.setItem("token",data.token);
+                        window.location = "/";
                     })
                 }}>Signup</Button>
             </div>
